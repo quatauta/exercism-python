@@ -10,32 +10,12 @@ include:
 variables:
   PIP_CACHE_DIR: '$CI_PROJECT_DIR/.cache/pip'
 
-elixir:
-  stage: test
-  image: elixir:alpine
-  cache:
-    key: elixir
-    paths:
-      - .cache/elixir
-  artifacts:
-    reports:
-      junit: '.cache/elixir/_build/test/lib/excercism_elixir/test-junit-report.xml'
-  coverage: '/^ +(\d+\.\d+%) \| Total$/'
-  variables:
-    MIX_ENV: test
-  script:
-    - source .gitlab/ci.sh
-    - ci_section elixir-setup ./bin/elixir-setup
-    - ci_section elixir-lint  ./bin/elixir-lint
-    - ci_section elixir-test  ./bin/elixir-test
-
-python:
+test:
   stage: test
   image: python:3-alpine
   cache:
-    key: python
     paths:
-      - .cache/python
+      - .cache
   artifacts:
     reports:
       cobertura: python-coverage.xml
@@ -43,6 +23,6 @@ python:
   coverage: '/^TOTAL .* (\d+%)$/'
   script:
     - source .gitlab/ci.sh
-    - ci_section python-setup ./bin/python-setup
-    - ci_section python-lint  ./bin/python-lint
-    - ci_section python-test  ./bin/python-test
+    - ci_section setup ./bin/setup
+    - ci_section lint  ./bin/lint
+    - ci_section test  ./bin/test

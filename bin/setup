@@ -15,7 +15,7 @@ if [ -z "${PROJECT_DIR}" ] ; then
   fi
 fi
 
-export CACHE_DIR="${PROJECT_DIR}/.cache/python"
+export CACHE_DIR="${PROJECT_DIR}/.cache"
 export PIP_CACHE_DIR="${CACHE_DIR}/pip"
 export PYTHONPATH="${CACHE_DIR}/target"
 export VENV_DIR="${CACHE_DIR}/venv"
@@ -24,7 +24,16 @@ export PATH="${PYTHONPATH}/bin:${PATH}"
 
 (
   cd "${PROJECT_DIR}" &&
+  python -V &&
+  (
+      command -v virtualenv >/dev/null ||
+      pip install --target="${PYTHONPATH}" --quiet virtualenv
+  ) &&
+  type virtualenv &&
+  (
+    [ -r "${VENV_DIR}/bin/activate" ] ||
+    virtualenv "${VENV_DIR}"
+  ) &&
   . "${VENV_DIR}/bin/activate" &&
-  pytest --junitxml="pytest.xml" --cov=python --cov-branch ./python/ &&
-  coverage xml --omit='*_test.py' -o python-coverage.xml
+  pip install -q coverage pylint pytest pytest-cov
 )

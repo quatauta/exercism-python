@@ -15,7 +15,7 @@ if [ -z "${PROJECT_DIR}" ] ; then
   fi
 fi
 
-export CACHE_DIR="${PROJECT_DIR}/.cache/python"
+export CACHE_DIR="${PROJECT_DIR}/.cache"
 export PIP_CACHE_DIR="${CACHE_DIR}/pip"
 export PYTHONPATH="${CACHE_DIR}/target"
 export VENV_DIR="${CACHE_DIR}/venv"
@@ -25,7 +25,6 @@ export PATH="${PYTHONPATH}/bin:${PATH}"
 (
   cd "${PROJECT_DIR}" &&
   . "${VENV_DIR}/bin/activate" &&
-  pylint ./python/
+  pytest --junitxml="pytest.xml" --cov=python --cov-branch ./python/ &&
+  coverage xml --omit='*_test.py' -o python-coverage.xml
 )
-
-true

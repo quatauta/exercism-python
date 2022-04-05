@@ -18,7 +18,9 @@ test:
       - .cache
   artifacts:
     reports:
-      cobertura: python-coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: python-coverage.xml
       junit: pytest.xml
   coverage: '/^TOTAL .* (\d+%)$/'
   script:
